@@ -9,7 +9,9 @@ public class BlockyGame {
     private Board board;
     private Piece activePiece;
     private Direction movement;
-    
+    static PieceKind[] pieceArray = {PieceKind.I, PieceKind.J,PieceKind.L,PieceKind.O,PieceKind.S,PieceKind.T,PieceKind.Z};
+    PieceKind[] newArray = shuffle(pieceArray);
+    int cur = 0;
     private int lockCounter;
     
     public BlockyGame() {
@@ -19,14 +21,59 @@ public class BlockyGame {
         trySpawnBlock();
     }
     
+    //checks for duplicates in the array, and if there is one, then returns fale. Otherwise, returns true.
+    private boolean noDuplicate(PieceKind[] arr, int randomNumberInt) {
+        for(int i = 0; i < arr.length; i++) {
+            if(newArray[i] == arr[randomNumberInt]) {
+                //duplicate found
+                return(false);
+            }
+        }
+        return(true);
+    }
+    
+    //Shuffles the array by creating a new array with random values from the original array.
+    private PieceKind[] shuffle(PieceKind[] arr){
+       
+        newArray = new PieceKind[arr.length];
+        
+        for(int i = 0; i < arr.length; i++)
+        {
+            int randomNumberInt = (int) (Math.random() * (arr.length));
+            
+            if (newArray[0] == null) {
+                newArray[0] = arr[randomNumberInt];
+            } else {
+                
+                if ((noDuplicate(arr,randomNumberInt)) == true) {
+                    newArray[i] = arr[randomNumberInt];
+                
+                } else if (noDuplicate(arr,randomNumberInt) == false) {
+                    i--;
+                }
+            }
+            
+        }
+        return(newArray);
+    }
+    
     private void trySpawnBlock() {
+
         if (activePiece == null) {
-            activePiece = new Piece(PieceKind.I, new Position(Constants.BOARD_HEIGHT - 1, Constants.BOARD_WIDTH / 2 - 2));
+            activePiece = new Piece(newArray[cur], new Position(Constants.BOARD_HEIGHT - 1, Constants.BOARD_WIDTH / 2 - 2));
+            cur++;
+
+            if (cur > pieceArray.length-1) {
+                newArray = shuffle(pieceArray);
+                cur = 0;
+            }
             if (board.collides(activePiece)) {
                 System.exit(0);
             }
+            
         }
     }
+    
     
     private void processMovement() {
         Position nextPos;
