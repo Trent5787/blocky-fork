@@ -2,6 +2,9 @@
 
 _(Gamewerks corporation internal code—do not share!)_
 
+## Updates
+- Fixed gravity of blocks
+
 ## Credits
 
 Primary developer: Trenton Cochell
